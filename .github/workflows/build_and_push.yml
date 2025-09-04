@@ -22,7 +22,8 @@ jobs:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       run: |
-        echo "TAGGED_VERSION=$(< ./version.txt)" >> $GITHUB_ENV
-        echo "Tag version is ${TAGGED_VERSION}"
+        TAGGED_VERSION=$(cat ./version.txt)
+        echo "TAGGED_VERSION=$TAGGED_VERSION" >> "$GITHUB_ENV"
+        echo "Tag version is $TAGGED_VERSION"
         chmod +x "${GITHUB_WORKSPACE}/util/release.sh"
         bash "${GITHUB_WORKSPACE}/util/release.sh"
