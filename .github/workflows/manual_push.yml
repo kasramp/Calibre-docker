@@ -1,0 +1,26 @@
+name: Manual Push
+
+on:
+  workflow_dispatch:
+    inputs:
+      docker_image:
+        description: 'Docker image tag to push'
+        required: true
+        default: '3.13.7-slim'
+        type: string
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Push Docker image
+        shell: bash
+        env:
+          TAGGED_VERSION: ${{ inputs.docker_image }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          echo "Tag version is ${TAGGED_VERSION}"
+          chmod +x "${GITHUB_WORKSPACE}/util/release.sh"
+          bash "${GITHUB_WORKSPACE}/util/release.sh"

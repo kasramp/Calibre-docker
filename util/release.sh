@@ -2,7 +2,6 @@
 set -ev
 
 IMAGE_NAME=kasramp/calibre-docker
-TAGGED_VERSION=$(<version.txt)
 
 docker login -u "$DOCKER_USERNAME" --password-stdin <<< "$DOCKER_PASSWORD" &&
 docker buildx create --use &&
