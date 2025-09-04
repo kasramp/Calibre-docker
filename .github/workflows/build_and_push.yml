@@ -16,14 +16,20 @@ jobs:
         chmod +x /usr/local/bin/hadolint
     - name: Lint Dockerfile
       run: hadolint Dockerfile
+    - name: Get tag version
+      shell: bash
+      run: |
+        echo "TAGGED_VERSION<<EOF" >> $GITHUB_OUTPUT
+        echo "$(cat ./version.txt)" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+      id: version
     - name: Build and push Docker image
       shell: bash
       env:
+        TAGGED_VERSION: ${{ steps.version.outputs.TAGGED_VERSION }}
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       run: |
-        TAGGED_VERSION=$(cat ./version.txt)
-        echo "TAGGED_VERSION=$TAGGED_VERSION" >> "$GITHUB_ENV"
         echo "Tag version is $TAGGED_VERSION"
         chmod +x "${GITHUB_WORKSPACE}/util/release.sh"
         bash "${GITHUB_WORKSPACE}/util/release.sh"
